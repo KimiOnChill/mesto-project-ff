@@ -1,34 +1,22 @@
+// todo: create module files for all conponents
+// todo: check popups and modals in your conspect 
+
 // Импорты
 import './pages/index.css';
-import { initialCards } from './scripts/cards.js';
+import { initialCards, createCard, deleteCard, handleLike } from './scripts/cards.js';
+import { openModal, closeModal } from './scripts/modal.js';
 import avatar from './images/avatar.jpg';
 
 // Добавление аватара
 document.querySelector('.profile__image').style.backgroundImage = `url(${avatar})`;
 
-// Темплейт карточки
-const cardTemplate = document.querySelector('#card-template').content;
-
 // DOM узлы
 const cardsContainer = document.querySelector('.places__list');
-const cardItem = cardTemplate.querySelector('.card');
-
-// Функция создания карточки
-function createCard (card, deleteCard) {
-  const newCard = cardItem.cloneNode(true);
-  const cardImage = newCard.querySelector('.card__image');
-  cardImage.src = card.link;
-  cardImage.alt = `Фото места под названием ${card.name}`;
-  newCard.querySelector('.card__title').textContent = card.name;
-  newCard.querySelector('.card__delete-button').addEventListener('click', deleteCard);
-  return newCard;
-}
-
-// Функция удаления карточки
-function deleteCard (evt) {
-  const element = evt.target.closest('.places__item');
-  element.remove();
-}
+const popupToEditProfile = document.querySelector('.popup_type_edit');
+const popupToAddNewPlace = document.querySelector('popup_type_new-card');
+const popupToShowFullPic = document.querySelector('popup_type_image');
 
 // Вывод карточки на страницу
 initialCards.forEach((card) => cardsContainer.append(createCard(card, deleteCard)));
+
+// Обработчики событий
