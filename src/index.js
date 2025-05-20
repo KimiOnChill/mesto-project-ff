@@ -12,11 +12,36 @@ document.querySelector('.profile__image').style.backgroundImage = `url(${avatar}
 
 // DOM узлы
 const cardsContainer = document.querySelector('.places__list');
-const popupToEditProfile = document.querySelector('.popup_type_edit');
-const popupToAddNewPlace = document.querySelector('popup_type_new-card');
-const popupToShowFullPic = document.querySelector('popup_type_image');
+
+const poppupContainer = document.querySelector('.popup'); //todo mb delete
+
+const buttonOpenEditProfile = document.querySelector('.profile__edit-button');
+const popupEditProfile = document.querySelector('.popup_type_edit');
+
+const buttonAddNewCard = document.querySelector('.profile__add-button');
+const popupAddNewCard = document.querySelector('.popup_type_new-card');
+
+const popupToShowFullPic = document.querySelector('.popup_type_image');
+const popupImage = document.querySelector('.popup__image');
+
+const everyButtonToClosePopup = document.querySelectorAll('.popup__close');
 
 // Вывод карточки на страницу
 initialCards.forEach((card) => cardsContainer.append(createCard(card, deleteCard)));
 
 // Обработчики событий
+buttonOpenEditProfile.addEventListener('click', () => openModal(popupEditProfile) );
+
+buttonAddNewCard.addEventListener('click', () => openModal(popupAddNewCard) );
+
+cardsContainer.addEventListener('click', function (evt) {
+  popupImage.src = evt.target.src;
+  popupImage.alt = evt.target.alt;
+  openModal(popupToShowFullPic);
+});
+
+poppupContainer.addEventListener('click', function (evt) {
+  if (evt.target.classList.contains('popup__close')) {
+    closeModal(poppupContainer);
+  }
+});
