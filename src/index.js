@@ -54,11 +54,5 @@ popupContainer.forEach( container => {
       closeModal(container);
     }
   });
-  //закрытие нажатием на esc
-  document.addEventListener('keydown', function closeByEsc(evt) {
-    if (evt.key === 'Escape') {
-      closeModal(container);
-      document.removeEventListener('keydown', closeByEsc);
-    }
-  });
+  //закрытие нажатием на esc в openModal
 });
