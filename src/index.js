@@ -13,7 +13,7 @@ document.querySelector('.profile__image').style.backgroundImage = `url(${avatar}
 // DOM узлы
 const cardsContainer = document.querySelector('.places__list');
 
-const poppupContainer = document.querySelector('.popup'); //todo mb delete
+const popupContainer = document.querySelectorAll('.popup');
 
 const buttonOpenEditProfile = document.querySelector('.profile__edit-button');
 const popupEditProfile = document.querySelector('.popup_type_edit');
@@ -40,8 +40,12 @@ cardsContainer.addEventListener('click', function (evt) {
   openModal(popupToShowFullPic);
 });
 
-poppupContainer.addEventListener('click', function (evt) {
-  if (evt.target.classList.contains('popup__close')) {
-    closeModal(poppupContainer);
-  }
+popupContainer.forEach( container => {
+  container.addEventListener('click', function (evt) {
+    if (!evt.target.classList.contains('popup__content')) {
+      closeModal(container);
+    }
+  });
 });
+
+
