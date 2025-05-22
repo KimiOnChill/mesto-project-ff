@@ -26,7 +26,7 @@ export const initialCards = [
 ];
 
 // Функция создания карточки
-export function createCard (card, deleteCard) {
+export function createCard (card, deleteCard, handleLike) {
   const cardTemplate = document.querySelector('#card-template').content;
   const newCard = cardTemplate.querySelector('.card').cloneNode(true);
   const cardImage = newCard.querySelector('.card__image');
@@ -34,6 +34,7 @@ export function createCard (card, deleteCard) {
   cardImage.alt = `Фото места под названием ${card.name}`;
   newCard.querySelector('.card__title').textContent = card.name;
   newCard.querySelector('.card__delete-button').addEventListener('click', deleteCard);
+  newCard.querySelector('.card__like-button').addEventListener('click', handleLike);
   return newCard;
 }
 
@@ -44,4 +45,10 @@ export function deleteCard (evt) {
 }
 
 // Функция обработки лайка
-export function handleLike (evt) {}
+export function handleLike (evt) {
+  const element = evt.target.closest('.places__item');
+  const likeButton = element.querySelector('.card__like-button');
+  likeButton.classList.contains('card__like-button_is-active') ? 
+    likeButton.classList.remove('card__like-button_is-active'):
+    likeButton.classList.add('card__like-button_is-active');
+}

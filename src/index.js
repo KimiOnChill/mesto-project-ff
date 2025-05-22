@@ -27,11 +27,11 @@ const popupAddNewCard = document.querySelector('.popup_type_new-card');
 const cardNameInput = document.querySelector('.popup__input_type_card-name');
 const cardUrlInput = document.querySelector('.popup__input_type_url');
 
-const popupToShowFullPic = document.querySelector('.popup_type_image');
 const popupImage = document.querySelector('.popup__image');
+const popupToShowFullPic = document.querySelector('.popup_type_image');
 
 // Вывод карточки на страницу
-initialCards.forEach((card) => cardsContainer.append(createCard(card, deleteCard)));
+initialCards.forEach((card) => cardsContainer.append(createCard(card, deleteCard, handleLike)));
 
 // Обработчики событий
 
@@ -48,7 +48,7 @@ buttonAddNewCard.addEventListener('click', () => openModal(popupAddNewCard) );
 
 // Открытие модального окна изображения карточки на фулл
 // по клику на изображение карточки
-cardsContainer.addEventListener('click', function (evt) {
+cardsContainer.addEventListener('click', function handleFull (evt) {
   if (evt.target.classList.contains('card__image')) {
     popupImage.src = evt.target.src;
     popupImage.alt = evt.target.alt;
@@ -86,7 +86,7 @@ formElement.forEach( form => {
         link: cardUrlInput.value
       };
       initialCards.unshift(newCardObj);
-      cardsContainer.prepend(createCard(initialCards[0], deleteCard))
+      cardsContainer.prepend(createCard(initialCards[0], deleteCard, handleLike))
       // test image
       // name: Дорсет
       // link: https://i.pinimg.com/736x/d7/10/a3/d710a3d4f26e1df2cbcbd1dfb0cddf8f.jpg
