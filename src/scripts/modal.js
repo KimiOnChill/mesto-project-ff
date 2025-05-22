@@ -1,9 +1,8 @@
 // Функция открытия модального окна
 // принимает на вход DOM-элемент модального окна
-
 export function openModal (input) {
   input.classList.add('popup_is-opened');
-  
+
   //закрытие нажатием на esc
   document.addEventListener('keydown', function closeByEsc(evt) {
     if (evt.key === 'Escape') {
