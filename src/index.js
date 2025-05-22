@@ -58,6 +58,9 @@ cardsContainer.addEventListener('click', function handleFull (evt) {
 
 //Закрытие любого открытого модального окна
 popupContainer.forEach( container => {
+  //добавление плавности
+  container.classList.add('popup_is-animated');
+  
   //закрытие кликом по крестику или оверлею
   container.addEventListener('click', function (evt) {
     if (evt.target.classList.contains('popup') || evt.target.classList.contains('popup__close')) {
