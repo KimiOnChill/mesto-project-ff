@@ -1,18 +1,20 @@
 // Функция открытия модального окна
 // принимает на вход DOM-элемент модального окна
-export function openModal (input) {
-  input.classList.add('popup_is-opened');
+export function openModal (modal) {
+  modal.classList.add('popup_is-opened');
 
   //закрытие нажатием на esc
-  document.addEventListener('keydown', function closeByEsc(evt) {
-    if (evt.key === 'Escape') {
-      closeModal(input);
-      document.removeEventListener('keydown', closeByEsc);
-    }
-  });
+  document.addEventListener('keydown', closePopupEsc) 
 }
 
 // Функция закрытия модального окна
-export function closeModal (input) {
-  input.classList.remove('popup_is-opened');
+export function closeModal (modal) {
+  modal.classList.remove('popup_is-opened');
+  document.removeEventListener ('keydown', closePopupEsc);
+}
+
+function closePopupEsc (evt) {
+  if (evt.key === 'Escape') {
+    closeModal(document.querySelector('.popup_is-opened'));
+  }
 }
