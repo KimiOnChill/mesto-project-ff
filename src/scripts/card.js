@@ -1,5 +1,3 @@
-import { openModal } from "./modal";
-
 // Функция создания карточки
 export function createCard (card, deleteCard, handleLike, openFullPic) {
   const cardTemplate = document.querySelector('#card-template').content;
@@ -27,14 +25,4 @@ export function handleLike (evt) {
   likeButton.classList.contains('card__like-button_is-active') ? 
     likeButton.classList.remove('card__like-button_is-active'):
     likeButton.classList.add('card__like-button_is-active');
-}
-
-// Функция открытия картинки на фулл
-export function openFullPic (evt) {
-  const popupImage = document.querySelector('.popup__image');
-  popupImage.src = evt.target.src;
-  popupImage.alt = evt.target.alt;
-  console.log(evt.target);
-  document.querySelector('.popup__caption').textContent = evt.target.alt;
-  openModal(document.querySelector('.popup_type_image'));
 }

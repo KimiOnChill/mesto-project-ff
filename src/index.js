@@ -2,7 +2,7 @@
 import avatar from './images/avatar.jpg';
 import './pages/index.css';
 import { initialCards } from './scripts/cards.js';
-import { createCard, deleteCard, handleLike, openFullPic } from './scripts/card.js';
+import { createCard, deleteCard, handleLike } from './scripts/card.js';
 import { openModal, closeModal } from './scripts/modal.js';
 
 // Добавление аватара
@@ -28,6 +28,10 @@ const buttonAddNewCard = document.querySelector('.profile__add-button');
 const popupAddNewCard = document.querySelector('.popup_type_new-card');
 const cardNameInput = document.querySelector('.popup__input_type_card-name');
 const cardUrlInput = document.querySelector('.popup__input_type_url');
+
+const popupFullPic = document.querySelector('.popup_type_image');
+const popupImage = document.querySelector('.popup__image');
+const popupCaption = document.querySelector('.popup__caption');
 
 // Вывод карточки на страницу
 initialCards.forEach((card) => cardsContainer.append(createCard(card, deleteCard, handleLike, openFullPic)));
@@ -79,3 +83,11 @@ addCardFormElement.addEventListener('submit', function handleSubmit (evt) {
   addCardFormElement.reset();
   closeModal(popupAddNewCard);
 });
+
+// Функция открытия картинки на фулл
+function openFullPic (evt) {
+  popupImage.src = evt.target.src;
+  popupImage.alt = evt.target.alt;
+  popupCaption.textContent = evt.target.alt;
+  openModal(popupFullPic);
+}
