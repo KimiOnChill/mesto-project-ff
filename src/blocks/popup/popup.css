@@ -21,3 +21,9 @@
   right: 0;
   z-index: 10;
 }
+
+.popup__input-error {
+  color: #FF0000;
+  font-size: 12px;
+  /* border? */
+}
