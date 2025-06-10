@@ -1,9 +1,12 @@
+//!! popup-input.css | popup__button.css | popup__form.css
+
 // Импорты
 import avatar from './images/avatar.jpg';
 import './pages/index.css';
 import { initialCards } from './scripts/cards.js';
 import { createCard, deleteCard, handleLike } from './scripts/card.js';
 import { openModal, closeModal } from './scripts/modal.js';
+import { enableValidation, clearValidation } from './scripts/validation.js';
 
 // Добавление аватара
 document.querySelector('.profile__image').style.backgroundImage = `url(${avatar})`;
@@ -66,6 +69,7 @@ profileFormElement.addEventListener('submit', function handleFormSubmit (evt) {
   evt.preventDefault();
   profileNameOnPage.textContent = nameInput.value;
   profileDescriptionOnPage.textContent = descriptionInput.value;
+  console.log(nameInput.name);
   closeModal(popupEditProfile);
 });
 
@@ -91,3 +95,6 @@ function openFullPic (evt) {
   popupCaption.textContent = evt.target.alt;
   openModal(popupFullPic);
 }
+
+// Вызов функции для лайв валидации всех input
+enableValidation()
