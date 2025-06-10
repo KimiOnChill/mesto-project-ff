@@ -1,4 +1,5 @@
-//!! popup-input.css | popup__button.css | popup__form.css
+//! What css i've changed:
+//! popup-input.css | popup__button.css | popup__form.css
 
 // Импорты
 import avatar from './images/avatar.jpg';
@@ -69,7 +70,7 @@ profileFormElement.addEventListener('submit', function handleFormSubmit (evt) {
   evt.preventDefault();
   profileNameOnPage.textContent = nameInput.value;
   profileDescriptionOnPage.textContent = descriptionInput.value;
-  console.log(nameInput.name);
+  console.log(nameInput.name);//!remove
   closeModal(popupEditProfile);
 });
 
@@ -97,4 +98,14 @@ function openFullPic (evt) {
 }
 
 // Вызов функции для лайв валидации всех input
-enableValidation()
+enableValidation({
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible'
+}); 
+
+// Очистка ошибок валидации
+clearValidation(profileForm, validationConfig);

@@ -1,8 +1,8 @@
 // todo: fix jumping display
-// todo: fix validity messages
+
 export function clearValidation() {};
 
-// to add class with error
+// Function to add class with error
 const showInputError = (formElement, inputElement, errorMessage) => {
   // to find element with error inside form
   const errorElement = formElement.querySelector(`.${inputElement.name}-input-error`);
@@ -11,7 +11,7 @@ const showInputError = (formElement, inputElement, errorMessage) => {
   errorElement.classList.remove('hidden');
 };
 
-// to remove class with error
+// Function to remove class with error
 const hideInputError = (formElement, inputElement) => {
   // to find element with error inside form
   const errorElement = formElement.querySelector(`.${inputElement.name}-input-error`);
@@ -20,65 +20,29 @@ const hideInputError = (formElement, inputElement) => {
   errorElement.textContent = '';
 };
 
-// checks input validity
+// Function to check input validity
 const isValid = (formElement, inputElement) => {
   if (inputElement.validity.patternMismatch) {
-    // to replace default validation message, when no data attribute
-    inputElement.setCustomValidity("Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы");
-    // to replace default validation message, when there is data attribute
     inputElement.setCustomValidity(inputElement.dataset.errorMessage);
   }
-  else if (inputElement.validity.rangeUnderflow) {
-    inputElement.setCustomValidity(`Минимальное количество символов: ${inputElement.minlength}`);//!check
-    inputElement.setCustomValidity(inputElement.dataset.errorMessage);
+  else if (inputElement.validity.valueMissing) {
+    inputElement.setCustomValidity("Вы пропустили это поле");
   }
-  else if (inputElement.validity.rangeOverflow) {
-    inputElement.setCustomValidity(`Минимальное количество символов: ${inputElement.maxlength}`);//!check
-    inputElement.setCustomValidity(inputElement.dataset.errorMessage);
-  } 
+  else if (inputElement.validity.typeMismatch) {
+    inputElement.setCustomValidity("Введите ссылку");
+  }
   else {
-    // to allow default validation message
     inputElement.setCustomValidity("");
   }
-  if (!inputElement.validity.valid) {
-    // if invalidity is caused by regex,
-    // var 'validationMessage' will contain custom error message 
+  if (!inputElement.validity.valid) { 
     showInputError(formElement, inputElement, inputElement.validationMessage);
   } 
   else {
     hideInputError(formElement, inputElement);
   }
-}; 
-
-// One eventListener will find only the first form.
-// So there is a function to add listeners to each from's input.
-const setEventListeners = (formElement) => {
-  // search for every input inside form and create array
-  const inputList = Array.from(formElement.querySelectorAll('.popup__input'));
-  //search for buttons
-  const buttonElement = formElement.querySelector('.popup__button'); 
-  toggleButtonState(inputList, buttonElement);
-  inputList.forEach((inputElement) => {
-    // Call isValid for every symbol typed in input
-    inputElement.addEventListener('input', () => {
-      // Callback has form and element to check
-      isValid(formElement, inputElement);
-      toggleButtonState(inputList, buttonElement);
-    });
-  });
 };
 
-// Adding listeners for every form
-export function enableValidation() {
-  // Search for every form with given class in DOM and create an array
-  const formList = Array.from(document.querySelectorAll('.popup__form'));
-
-  formList.forEach((formElement) => {
-    setEventListeners(formElement);
-  });
-};
-
-// Function  to check if every input is valid
+// Function to check if every input is valid
 const hasInvalidInput = (inputList) => {
   return inputList.some((inputElement) => {
     // If some input is invalid, this will be true and stop the function
@@ -88,12 +52,33 @@ const hasInvalidInput = (inputList) => {
 
 // Function to make button active or not
 const toggleButtonState = (inputList, buttonElement) => {
-  // if one input is invalid, diable the button
+  // if any input is invalid, diable the button
   if (hasInvalidInput(inputList)) {
     buttonElement.disabled = true;
-    buttonElement.classList.add('.popup__button-inactive');
+    buttonElement.classList.add('popup__button-inactive');
   } else {
     buttonElement.disabled = false;
-    buttonElement.classList.remove('.popup__button-inactive');
+    buttonElement.classList.remove('popup__button-inactive');
   }
 }; 
+
+// Function to add listeners to each form's input
+const setEventListeners = (formElement) => {
+  const inputList = Array.from(formElement.querySelectorAll('.popup__input'));
+  const buttonElement = formElement.querySelector('.popup__button'); 
+  if (formElement.name == "new-place") toggleButtonState(inputList, buttonElement);
+  inputList.forEach((inputElement) => {
+    inputElement.addEventListener('input', () => {
+      isValid(formElement, inputElement);
+      toggleButtonState(inputList, buttonElement);
+    });
+  });
+};
+
+// Function to add listeners for every form
+export function enableValidation() {
+  const formList = Array.from(document.querySelectorAll('.popup__form'));
+  formList.forEach((formElement) => {
+    setEventListeners(formElement);
+  });
+};
