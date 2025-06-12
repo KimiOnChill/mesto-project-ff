@@ -37,32 +37,54 @@ const popupFullPic = document.querySelector('.popup_type_image');
 const popupImage = document.querySelector('.popup__image');
 const popupCaption = document.querySelector('.popup__caption');
 
+// Объект с классами для валидации
+const config ={
+  formClass: '.popup__form',
+  inputClass: '.popup__input',
+  submitButtonClass: '.popup__button',
+  inactiveButtonClass: 'popup__button-inactive',
+  errorClass: 'popup__input-error',
+  hiddenClass: 'hidden'
+};
+
 // Вывод карточки на страницу
 initialCards.forEach((card) => cardsContainer.append(createCard(card, deleteCard, handleLike, openFullPic)));
 
 // Открытие модального окна редактирования профиля по кнопке
 buttonOpenEditProfile.addEventListener('click', function () { 
   openModal(popupEditProfile);
-  //поля формы заполнены значениями со страницы
+  // поля формы заполнены значениями со страницы
   nameInput.value = profileNameOnPage.textContent;
-  descriptionInput.value = profileDescriptionOnPage.textContent;  
+  descriptionInput.value = profileDescriptionOnPage.textContent;
+  // очитска полей от валидации
+  clearValidation(profileFormElement, nameInput, config);
+  clearValidation(profileFormElement, descriptionInput, config);
+  // блокировка кнопки
+  profileFormElement.querySelector(config.submitButtonClass).classList.remove(config.inactiveButtonClass);
 });
 
 // Открытие модального окна добавления карточки по кнопке
-buttonAddNewCard.addEventListener('click', () => openModal(popupAddNewCard) );
+buttonAddNewCard.addEventListener('click', () => {
+  openModal(popupAddNewCard);
+  // очитска полей от валидации
+  clearValidation(addCardFormElement, cardNameInput, config);
+  clearValidation(addCardFormElement, cardUrlInput, config);
+  // блокировка кнопки
+  addCardFormElement.querySelector(config.submitButtonClass).classList.add(config.inactiveButtonClass);
+});
 
-//Закрытие любого открытого модального окна
+// Закрытие любого открытого модального окна
 allPopups.forEach( popup => {
-  //добавление плавности
+  // добавление плавности
   popup.classList.add('popup_is-animated');
   
-  //закрытие кликом по крестику или оверлею
+  // закрытие кликом по крестику или оверлею
   popup.addEventListener('click', function (evt) {
     if (evt.target.classList.contains('popup') || evt.target.classList.contains('popup__close')) {
       closeModal(popup);
     }
   });
-  //закрытие нажатием на esc описано в openModal
+  // закрытие нажатием на esc описано в openModal
 });
 
 // «Отправка» формы редактирования профиля
@@ -70,7 +92,6 @@ profileFormElement.addEventListener('submit', function handleFormSubmit (evt) {
   evt.preventDefault();
   profileNameOnPage.textContent = nameInput.value;
   profileDescriptionOnPage.textContent = descriptionInput.value;
-  console.log(nameInput.name);//!remove
   closeModal(popupEditProfile);
 });
 
@@ -98,14 +119,4 @@ function openFullPic (evt) {
 }
 
 // Вызов функции для лайв валидации всех input
-enableValidation({
-  formSelector: '.popup__form',
-  inputSelector: '.popup__input',
-  submitButtonSelector: '.popup__button',
-  inactiveButtonClass: 'popup__button_disabled',
-  inputErrorClass: 'popup__input_type_error',
-  errorClass: 'popup__error_visible'
-}); 
-
-// Очистка ошибок валидации
-clearValidation(profileForm, validationConfig);
+enableValidation(config);
