@@ -1,4 +1,4 @@
-//! What css i've changed:
+//! What css i've changed when was setting up validation:
 //! popup-input.css | popup__button.css | popup__form.css
 
 // Импорты
@@ -8,9 +8,10 @@ import { initialCards } from './scripts/cards.js';
 import { createCard, deleteCard, handleLike } from './scripts/card.js';
 import { openModal, closeModal } from './scripts/modal.js';
 import { enableValidation, clearValidation } from './scripts/validation.js';
+import { testServer, getInitialCards, getUserData } from './scripts/api.js';
 
 // Добавление аватара
-document.querySelector('.profile__image').style.backgroundImage = `url(${avatar})`;
+//document.querySelector('.profile__image').style.backgroundImage = `url(${avatar})`;
 
 // DOM узлы
 const cardsContainer = document.querySelector('.places__list');
@@ -20,6 +21,7 @@ const allPopups = document.querySelectorAll('.popup');
 const buttonOpenEditProfile = document.querySelector('.profile__edit-button');
 const popupEditProfile = document.querySelector('.popup_type_edit');
 
+const profileImageOnPage = document.querySelector('.profile__image');
 const profileNameOnPage = document.querySelector('.profile__title');
 const profileDescriptionOnPage = document.querySelector('.profile__description');
 
@@ -49,6 +51,13 @@ const config ={
 
 // Вывод карточки на страницу
 initialCards.forEach((card) => cardsContainer.append(createCard(card, deleteCard, handleLike, openFullPic)));
+
+// Заполнение полей формы значениями с сервера
+getUserData().then(userData => {
+  profileNameOnPage.textContent = userData.name;
+  profileDescriptionOnPage.textContent = userData.about;
+  profileImageOnPage.style.backgroundImage = `url('${userData.avatar}')`;
+});
 
 // Открытие модального окна редактирования профиля по кнопке
 buttonOpenEditProfile.addEventListener('click', function () { 
@@ -120,3 +129,6 @@ function openFullPic (evt) {
 
 // Вызов функции для лайв валидации всех input
 enableValidation(config);
+
+// ! Struggles with async
+getInitialCards();
