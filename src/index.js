@@ -8,7 +8,7 @@ import { initialCards } from './scripts/cards.js';
 import { createCard, deleteCard, handleLike } from './scripts/card.js';
 import { openModal, closeModal } from './scripts/modal.js';
 import { enableValidation, clearValidation } from './scripts/validation.js';
-import { getUserData, getInitialCards, testServer} from './scripts/api.js';
+import { getUserData, getInitialCards, editProfile} from './scripts/api.js';
 
 // !Добавление аватара
 // !document.querySelector('.profile__image').style.backgroundImage = `url(${avatar})`;
@@ -54,7 +54,7 @@ const config ={
 
 // Ответ сервера на запрос профиля и карточек
 Promise.all([getUserData, getInitialCards])
-  .then((dataFromServer) => {
+  .then(() => {
     // Заполнение профиля значениями с сервера
     getUserData().then(userData => {
       profileNameOnPage.textContent = userData.name;
@@ -67,7 +67,7 @@ Promise.all([getUserData, getInitialCards])
         cardsContainer.append(createCard(card, deleteCard, handleLike, openFullPic));
       })
     })
-  })
+})
 
 // Открытие модального окна редактирования профиля по кнопке
 buttonOpenEditProfile.addEventListener('click', function () { 
@@ -106,11 +106,14 @@ allPopups.forEach( popup => {
   // закрытие нажатием на esc описано в openModal
 });
 
-// «Отправка» формы редактирования профиля
+// Отправка формы редактирования профиля, подгружающая данные с сервера при изменении
 profileFormElement.addEventListener('submit', function handleFormSubmit (evt) {
   evt.preventDefault();
-  profileNameOnPage.textContent = nameInput.value;
-  profileDescriptionOnPage.textContent = descriptionInput.value;
+  editProfile(nameInput.value, descriptionInput.value);
+  getUserData().then(userData => {
+      profileNameOnPage.textContent = userData.name;
+      profileDescriptionOnPage.textContent = userData.about;
+  })
   closeModal(popupEditProfile);
 });
 

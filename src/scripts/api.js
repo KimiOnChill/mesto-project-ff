@@ -28,13 +28,18 @@ export const getInitialCards = () => {
     })
 } 
 
-export function testServer () {
-  return fetch(`${requestConfig.baseUrl}/cards`, {
-    headers: requestConfig.headers
-})
-  .then(res => res.json())
-  .then((result) => {
-    console.log(result);
-  }); 
+// Редактирование профиля с отправкой на сервер
+export const editProfile = (newname, newAbout) => {
+  return fetch(`${requestConfig.baseUrl}/users/me`, {
+      method: 'PATCH',
+      headers: requestConfig.headers,
+      body: JSON.stringify({
+        name: newname,
+        about: newAbout
+      })
+    })
+      .then(res => {
+        if (res.ok) return res.json();
+        return Promise.reject(`Ошибка: ${res.status}`);
+      })
 }
-
