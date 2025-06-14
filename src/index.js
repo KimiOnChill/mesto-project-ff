@@ -8,10 +8,10 @@ import { initialCards } from './scripts/cards.js';
 import { createCard, deleteCard, handleLike } from './scripts/card.js';
 import { openModal, closeModal } from './scripts/modal.js';
 import { enableValidation, clearValidation } from './scripts/validation.js';
-import { testServer, getInitialCards, getUserData } from './scripts/api.js';
+import { getUserData, getInitialCards, testServer} from './scripts/api.js';
 
-// Добавление аватара
-//document.querySelector('.profile__image').style.backgroundImage = `url(${avatar})`;
+// !Добавление аватара
+// !document.querySelector('.profile__image').style.backgroundImage = `url(${avatar})`;
 
 // DOM узлы
 const cardsContainer = document.querySelector('.places__list');
@@ -49,15 +49,25 @@ const config ={
   hiddenClass: 'hidden'
 };
 
-// Вывод карточки на страницу
-initialCards.forEach((card) => cardsContainer.append(createCard(card, deleteCard, handleLike, openFullPic)));
+//! Вывод карточки на страницу старым способом
+//!initialCards.forEach((card) => cardsContainer.append(createCard(card, deleteCard, handleLike, openFullPic)));
 
-// Заполнение полей формы значениями с сервера
-getUserData().then(userData => {
-  profileNameOnPage.textContent = userData.name;
-  profileDescriptionOnPage.textContent = userData.about;
-  profileImageOnPage.style.backgroundImage = `url('${userData.avatar}')`;
-});
+// Ответ сервера на запрос профиля и карточек
+Promise.all([getUserData, getInitialCards])
+  .then((dataFromServer) => {
+    // Заполнение профиля значениями с сервера
+    getUserData().then(userData => {
+      profileNameOnPage.textContent = userData.name;
+      profileDescriptionOnPage.textContent = userData.about;
+      profileImageOnPage.style.backgroundImage = `url('${userData.avatar}')`;
+    });
+    // Наполнение карточками с сервера
+    getInitialCards().then(cardsObj => {
+      cardsObj.forEach((card) => {
+        cardsContainer.append(createCard(card, deleteCard, handleLike, openFullPic));
+      })
+    })
+  })
 
 // Открытие модального окна редактирования профиля по кнопке
 buttonOpenEditProfile.addEventListener('click', function () { 
@@ -129,6 +139,3 @@ function openFullPic (evt) {
 
 // Вызов функции для лайв валидации всех input
 enableValidation(config);
-
-// ! Struggles with async
-getInitialCards();

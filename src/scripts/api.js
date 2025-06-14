@@ -13,9 +13,20 @@ export const getUserData = () => {
   })
     .then(res => {
       if (res.ok) return res.json()
-      // todo: add ERROR
+      return Promise.reject(`Ошибка: ${res.status}`);
     })
 }
+
+// Получение карточек с сервера
+export const getInitialCards = () => {
+  return fetch(`${requestConfig.baseUrl}/cards`, {
+    headers: requestConfig.headers
+  })
+    .then(res => {
+      if (res.ok) return res.json();
+      return Promise.reject(`Ошибка: ${res.status}`);
+    })
+} 
 
 export function testServer () {
   return fetch(`${requestConfig.baseUrl}/cards`, {
@@ -27,20 +38,3 @@ export function testServer () {
   }); 
 }
 
-// Получение карточек с сервера
-export const getInitialCards = () => {
-  return fetch(`${requestConfig.baseUrl}/cards`, {
-    headers: requestConfig.headers
-  })
-    .then(res => {
-      if (res.ok) {
-        return res.json();
-      }
-
-      // если ошибка, отклоняем промис
-      return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .catch((err) => {
-    console.log(err); // выводим ошибку в консоль
-    }); 
-} 
