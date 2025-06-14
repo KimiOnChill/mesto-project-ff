@@ -29,13 +29,29 @@ export const getInitialCards = () => {
 } 
 
 // Редактирование профиля с отправкой на сервер
-export const editProfile = (newname, newAbout) => {
+export const editProfile = (newName, newAbout) => {
   return fetch(`${requestConfig.baseUrl}/users/me`, {
       method: 'PATCH',
       headers: requestConfig.headers,
       body: JSON.stringify({
-        name: newname,
+        name: newName,
         about: newAbout
+      })
+    })
+      .then(res => {
+        if (res.ok) return res.json();
+        return Promise.reject(`Ошибка: ${res.status}`);
+      })
+}
+
+// Добавление карточки с отправкой на сервер
+export const addCard = (newName, newLink) => {
+  return fetch(`${requestConfig.baseUrl}/cards`, {
+      method: 'POST',
+      headers: requestConfig.headers,
+      body: JSON.stringify({
+        name: newName,
+        link: newLink
       })
     })
       .then(res => {

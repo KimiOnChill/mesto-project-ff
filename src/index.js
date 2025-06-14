@@ -8,7 +8,7 @@ import { initialCards } from './scripts/cards.js';
 import { createCard, deleteCard, handleLike } from './scripts/card.js';
 import { openModal, closeModal } from './scripts/modal.js';
 import { enableValidation, clearValidation } from './scripts/validation.js';
-import { getUserData, getInitialCards, editProfile} from './scripts/api.js';
+import { getUserData, getInitialCards, editProfile, addCard } from './scripts/api.js';
 
 // !Добавление аватара
 // !document.querySelector('.profile__image').style.backgroundImage = `url(${avatar})`;
@@ -124,7 +124,8 @@ addCardFormElement.addEventListener('submit', function handleSubmit (evt) {
     name: cardNameInput.value,
     link: cardUrlInput.value
   };
-  cardsContainer.prepend(createCard(newCardObj, deleteCard, handleLike, openFullPic))
+  cardsContainer.prepend(createCard(newCardObj, deleteCard, handleLike, openFullPic));
+  addCard(newCardObj.name, newCardObj.link);
   // test image
   // name: Дорсет
   // link: https://i.pinimg.com/736x/d7/10/a3/d710a3d4f26e1df2cbcbd1dfb0cddf8f.jpg
