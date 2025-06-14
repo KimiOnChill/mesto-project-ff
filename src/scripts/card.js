@@ -3,12 +3,13 @@ export function createCard (card, deleteCard, handleLike, openFullPic) {
   const cardTemplate = document.querySelector('#card-template').content;
   const newCard = cardTemplate.querySelector('.card').cloneNode(true);
   const cardImage = newCard.querySelector('.card__image');
-  cardImage.src = card.link;
+  cardImage.src = card.link; 
   cardImage.alt = card.name;
   newCard.querySelector('.card__title').textContent = card.name;
-  newCard.querySelector('.card__delete-button').addEventListener('click', deleteCard);
+  newCard.querySelector('.card__delete-button').addEventListener('click', deleteCard); 
   newCard.querySelector('.card__like-button').addEventListener('click', handleLike);
   cardImage.addEventListener('click', openFullPic);
+  newCard.querySelector('.card__like-count').textContent = card.likes.length;
   return newCard;
 }
 

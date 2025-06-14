@@ -61,7 +61,7 @@ Promise.all([getUserData, getInitialCards])
       profileDescriptionOnPage.textContent = userData.about;
       profileImageOnPage.style.backgroundImage = `url('${userData.avatar}')`;
     });
-    // Наполнение карточками с сервера
+    // Наполнение страницы карточками с сервера
     getInitialCards().then(cardsObj => {
       cardsObj.forEach((card) => {
         cardsContainer.append(createCard(card, deleteCard, handleLike, openFullPic));
@@ -129,6 +129,7 @@ addCardFormElement.addEventListener('submit', function handleSubmit (evt) {
   // test image
   // name: Дорсет
   // link: https://i.pinimg.com/736x/d7/10/a3/d710a3d4f26e1df2cbcbd1dfb0cddf8f.jpg
+  // https://sun9-71.userapi.com/impg/GaZ1Rz0QEz5l79S1mVCze8ycWxhKuTOTCeCOrw/o1b9fvenCjk.jpg?size=2560x1405&quality=95&sign=fa00b8265714d21643faf53955e37cd8&type=album
   addCardFormElement.reset();
   closeModal(popupAddNewCard);
 });
