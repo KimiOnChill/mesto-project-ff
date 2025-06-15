@@ -18,7 +18,7 @@ export const getUserData = () => {
 }
 
 // Получение карточек с сервера
-export const getInitialCards = () => {
+export const getCardsFromServer = () => {
   return fetch(`${requestConfig.baseUrl}/cards`, {
     headers: requestConfig.headers
   })
@@ -57,5 +57,19 @@ export const addCard = (newName, newLink) => {
       .then(res => {
         if (res.ok) return res.json();
         return Promise.reject(`Ошибка: ${res.status}`);
+      })
+}
+
+// Удаление карточки
+export const deleteCardFromServer = (cardId, cardElement) => {
+  return fetch(`${requestConfig.baseUrl}/cards/${cardId}`, {
+      method: 'DELETE',
+      headers: requestConfig.headers
+    })
+      .then(res => {
+        if (res.ok) cardElement.remove();
+      })
+      .catch((error) => {
+        return Promise.reject(`Ошибка: ${error}`);
       })
 }

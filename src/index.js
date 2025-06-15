@@ -2,15 +2,15 @@
 //! popup-input.css | popup__button.css | popup__form.css
 
 // Импорты
-import avatar from './images/avatar.jpg';
+import avatar from './images/avatar.jpg';// !DELETE
 import './pages/index.css';
-import { initialCards } from './scripts/cards.js';
+import { initialCards } from './scripts/cards.js';// !DELETE
 import { createCard, deleteCard, handleLike } from './scripts/card.js';
 import { openModal, closeModal } from './scripts/modal.js';
 import { enableValidation, clearValidation } from './scripts/validation.js';
-import { getUserData, getInitialCards, editProfile, addCard } from './scripts/api.js';
+import { getUserData, getCardsFromServer, editProfile, addCard, deleteCardFromServer } from './scripts/api.js';
 
-// !Добавление аватара
+// !Добавление аватара без сервера
 // !document.querySelector('.profile__image').style.backgroundImage = `url(${avatar})`;
 
 // DOM узлы
@@ -51,20 +51,26 @@ const config ={
 
 //! Вывод карточки на страницу старым способом
 //!initialCards.forEach((card) => cardsContainer.append(createCard(card, deleteCard, handleLike, openFullPic)));
+// ID пользователя, чтобы отобразить deleteButton
+let userId;
 
 // Ответ сервера на запрос профиля и карточек
-Promise.all([getUserData, getInitialCards])
+Promise.all([getUserData(), getCardsFromServer()])
   .then(() => {
     // Заполнение профиля значениями с сервера
     getUserData().then(userData => {
       profileNameOnPage.textContent = userData.name;
       profileDescriptionOnPage.textContent = userData.about;
       profileImageOnPage.style.backgroundImage = `url('${userData.avatar}')`;
+      userId = userData['_id'];
     });
+    
     // Наполнение страницы карточками с сервера
-    getInitialCards().then(cardsObj => {
+    getCardsFromServer().then(cardsObj => {
       cardsObj.forEach((card) => {
-        cardsContainer.append(createCard(card, deleteCard, handleLike, openFullPic));
+        const cardOwnerId = card['owner']['_id'];
+        const cardId = card['_id']; //!mb DELETE
+        cardsContainer.append(createCard(card, openFullPic, handleLike, cardOwnerId, userId, deleteCardFromServer));
       })
     })
 })
@@ -124,12 +130,13 @@ addCardFormElement.addEventListener('submit', function handleSubmit (evt) {
     name: cardNameInput.value,
     link: cardUrlInput.value
   };
-  cardsContainer.prepend(createCard(newCardObj, deleteCard, handleLike, openFullPic));
+  cardsContainer.prepend(createCard(newCardObj, openFullPic, handleLike, userId, userId, deleteCardFromServer));
   addCard(newCardObj.name, newCardObj.link);
   // test image
   // name: Дорсет
   // link: https://i.pinimg.com/736x/d7/10/a3/d710a3d4f26e1df2cbcbd1dfb0cddf8f.jpg
   // https://sun9-71.userapi.com/impg/GaZ1Rz0QEz5l79S1mVCze8ycWxhKuTOTCeCOrw/o1b9fvenCjk.jpg?size=2560x1405&quality=95&sign=fa00b8265714d21643faf53955e37cd8&type=album
+  // https://i.pinimg.com/736x/b1/6b/e2/b16be28a1c6d58fbdb4e5fb3daeca161.jpg
   addCardFormElement.reset();
   closeModal(popupAddNewCard);
 });
