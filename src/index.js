@@ -2,42 +2,41 @@
 //! popup-input.css | popup__button.css | popup__form.css
 
 // Импорты
-import avatar from './images/avatar.jpg';// !DELETE
 import './pages/index.css';
-import { initialCards } from './scripts/cards.js';// !DELETE
-import { createCard, deleteCard, handleLike } from './scripts/card.js';
+import { createCard, handleLike } from './scripts/card.js';
 import { openModal, closeModal } from './scripts/modal.js';
 import { enableValidation, clearValidation } from './scripts/validation.js';
-import { getUserData, getCardsFromServer, editProfile, addCard, deleteCardFromServer } from './scripts/api.js';
-
-// !Добавление аватара без сервера
-// !document.querySelector('.profile__image').style.backgroundImage = `url(${avatar})`;
+import { getUserData, changeAvatar, getCardsFromServer, editProfile, addCard, deleteCardFromServer } from './scripts/api.js';
 
 // DOM узлы
-const cardsContainer = document.querySelector('.places__list');
+const cardsContainer = document.querySelector('.places__list'); // контейнер всех карточек
 
-const allPopups = document.querySelectorAll('.popup');
+const allPopups = document.querySelectorAll('.popup'); // массив всех попапов
 
-const buttonOpenEditProfile = document.querySelector('.profile__edit-button');
-const popupEditProfile = document.querySelector('.popup_type_edit');
+const profileImageOnPage = document.querySelector('.profile__image'); // элемент с аватаром
+const popupToChangeAvatar = document.querySelector('.popup_type_change-avatar'); // попап с формой для смены аватара
+const changeAvatarFormElement = document.querySelector('.popup__form[name="change-avatar"]'); // форма для смены аватара
+const changeAvatarInput = document.querySelector('.popup__input_type_url-avatar'); // инпут для смены аватара
 
-const profileImageOnPage = document.querySelector('.profile__image');
-const profileNameOnPage = document.querySelector('.profile__title');
-const profileDescriptionOnPage = document.querySelector('.profile__description');
+const buttonOpenEditProfile = document.querySelector('.profile__edit-button'); // кнопка открытия попапа редактирования профиля
+const popupEditProfile = document.querySelector('.popup_type_edit'); // попап с формой для редактирования профиля
 
-const profileFormElement = document.querySelector('.popup__form[name="edit-profile"]');
-const nameInput = document.querySelector('.popup__input_type_name');
-const descriptionInput = document.querySelector('.popup__input_type_description');
+const profileNameOnPage = document.querySelector('.profile__title'); // имя пользователя на странице
+const profileDescriptionOnPage = document.querySelector('.profile__description');// описание пользователя на странице
 
-const addCardFormElement = document.querySelector('.popup__form[name="new-place"]');
-const buttonAddNewCard = document.querySelector('.profile__add-button');
-const popupAddNewCard = document.querySelector('.popup_type_new-card');
-const cardNameInput = document.querySelector('.popup__input_type_card-name');
-const cardUrlInput = document.querySelector('.popup__input_type_url');
+const profileFormElement = document.querySelector('.popup__form[name="edit-profile"]'); // форма для редактирования профиля
+const nameInput = document.querySelector('.popup__input_type_name'); // инпут имени
+const descriptionInput = document.querySelector('.popup__input_type_description'); // инпут описания
 
-const popupFullPic = document.querySelector('.popup_type_image');
-const popupImage = document.querySelector('.popup__image');
-const popupCaption = document.querySelector('.popup__caption');
+const buttonAddNewCard = document.querySelector('.profile__add-button'); // кнопка открытия попапа для новой карточки
+const popupAddNewCard = document.querySelector('.popup_type_new-card'); // попап с формой для добавления новой карточки
+const addCardFormElement = document.querySelector('.popup__form[name="new-place"]'); // форма для добавления новой карточки
+const cardNameInput = document.querySelector('.popup__input_type_card-name'); // инпут названия карточки
+const cardUrlInput = document.querySelector('.popup__input_type_url'); // инпут ссылки на картинку
+
+const popupFullPic = document.querySelector('.popup_type_image'); // попап карточки, открытой на Фулл
+const popupImage = document.querySelector('.popup__image'); // карточка, открытая на Фулл
+const popupCaption = document.querySelector('.popup__caption'); // подпись развернутой картинки
 
 // Объект с классами для валидации
 const config ={
@@ -49,9 +48,7 @@ const config ={
   hiddenClass: 'hidden'
 };
 
-//! Вывод карточки на страницу старым способом
-//!initialCards.forEach((card) => cardsContainer.append(createCard(card, deleteCard, handleLike, openFullPic)));
-// ID пользователя, чтобы отобразить deleteButton
+// ID пользователя, для удобства
 let userId;
 
 // Ответ сервера на запрос профиля и карточек
@@ -69,11 +66,28 @@ Promise.all([getUserData(), getCardsFromServer()])
     getCardsFromServer().then(cardsObj => {
       cardsObj.forEach((card) => {
         const cardOwnerId = card['owner']['_id'];
-        const cardId = card['_id']; //!mb DELETE
         cardsContainer.append(createCard(card, openFullPic, handleLike, cardOwnerId, userId, deleteCardFromServer));
       })
     })
-})
+});
+
+// Открытие модального окна редактирования аватара по кнопке
+profileImageOnPage.addEventListener('click', function () {
+  openModal(popupToChangeAvatar);
+  // очистка поля от валидации
+  clearValidation(changeAvatarFormElement, changeAvatarInput, config);
+});
+
+// Запрос на смену аватара
+changeAvatarFormElement.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+  changeAvatar(changeAvatarInput.value).then((res) => {
+    profileImageOnPage.style.backgroundImage = `url('${res.avatar}')`;
+    changeAvatarFormElement.reset();
+    closeModal(popupToChangeAvatar);
+  });
+  
+});
 
 // Открытие модального окна редактирования профиля по кнопке
 buttonOpenEditProfile.addEventListener('click', function () { 
@@ -81,7 +95,7 @@ buttonOpenEditProfile.addEventListener('click', function () {
   // поля формы заполнены значениями со страницы
   nameInput.value = profileNameOnPage.textContent;
   descriptionInput.value = profileDescriptionOnPage.textContent;
-  // очитска полей от валидации
+  // очистка полей от валидации
   clearValidation(profileFormElement, nameInput, config);
   clearValidation(profileFormElement, descriptionInput, config);
   // блокировка кнопки
@@ -146,7 +160,7 @@ function openFullPic (evt) {
   popupImage.alt = evt.target.alt;
   popupCaption.textContent = evt.target.alt;
   openModal(popupFullPic);
-}
+};
 
 // Вызов функции для лайв валидации всех input
 enableValidation(config);

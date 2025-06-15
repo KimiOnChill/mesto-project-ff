@@ -14,11 +14,13 @@
   </header>
   <main class="content">
     <section class="profile page__section">
-      <div class="profile__image"></div>
+      <div class="profile__image ">
+        <div class="profile__image-background"></div>
+      </div>
       <div class="profile__info">
-        <h1 class="profile__title"></h1><!-- Жак-Ив Кусто -->
+        <h1 class="profile__title"></h1>
         <button class="profile__edit-button" type="button"></button>
-        <p class="profile__description"></p><!-- Исследователь океана -->
+        <p class="profile__description"></p>
       </div>
       <button class="profile__add-button" type="button"></button>
     </section>
@@ -32,6 +34,24 @@
       © 2021 Mesto Russia
     </p>
   </footer>
+  <!-- Pop up to Edit Profile Avatar -->
+  <div class="popup popup_type_change-avatar">
+    <div class="popup__content">
+      <button type="button" class="popup__close"></button>
+      <h3 class="popup__title">Обновить аватар</h3>
+      <form class="popup__form" name="change-avatar" novalidate>
+        <input 
+          type="url" 
+          name="link" 
+          class="popup__input popup__input_type_url-avatar" 
+          placeholder="Ссылка на картинку с аватаром" 
+          required>
+        <span class="link-input-error popup__form-error hidden"></span>
+        <button type="submit" class="button popup__button popup__button-inactive">Сохранить</button>
+      </form>
+    </div>
+  </div>
+  <!-- Pop up to Edit Profile -->
   <div class="popup popup_type_edit">
     <div class="popup__content">
       <button type="button" class="popup__close"></button>
@@ -63,6 +83,7 @@
       </form>
     </div>
   </div>
+  <!-- Pop up to Add New Card -->
   <div class="popup popup_type_new-card">
     <div class="popup__content">
       <button type="button" class="popup__close"></button>
@@ -90,6 +111,7 @@
       </form>
     </div>
   </div>
+  <!-- Pop up to Open Card on FUll -->
   <div class="popup popup_type_image">
     <div class="popup__content popup__content_content_image">
       <button type="button" class="popup__close"></button>

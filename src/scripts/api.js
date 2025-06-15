@@ -17,6 +17,21 @@ export const getUserData = () => {
     })
 }
 
+// Смена аватара пользователя
+export const changeAvatar = (avatarLink) => {
+  return fetch(`${requestConfig.baseUrl}/users/me/avatar`, {
+    method: 'PATCH',
+    headers: requestConfig.headers,
+    body: JSON.stringify({
+        avatar: avatarLink
+      })
+  })
+    .then(res => {
+      if (res.ok) return res.json()
+      return Promise.reject(`Ошибка: ${res.status}`);
+    })
+}
+
 // Получение карточек с сервера
 export const getCardsFromServer = () => {
   return fetch(`${requestConfig.baseUrl}/cards`, {
