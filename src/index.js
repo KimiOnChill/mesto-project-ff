@@ -133,10 +133,9 @@ addCardFormElement.addEventListener('submit', function handleSubmit (evt) {
   cardsContainer.prepend(createCard(newCardObj, openFullPic, handleLike, userId, userId, deleteCardFromServer));
   addCard(newCardObj.name, newCardObj.link);
   // test image
-  // name: Дорсет
-  // link: https://i.pinimg.com/736x/d7/10/a3/d710a3d4f26e1df2cbcbd1dfb0cddf8f.jpg
+  // name: Big Yoshi
+  // link: https://i.pinimg.com/736x/b1/6b/e2/b16be28a1c6d58fbdb4e5fb3daeca161.jpg
   // https://sun9-71.userapi.com/impg/GaZ1Rz0QEz5l79S1mVCze8ycWxhKuTOTCeCOrw/o1b9fvenCjk.jpg?size=2560x1405&quality=95&sign=fa00b8265714d21643faf53955e37cd8&type=album
-  // https://i.pinimg.com/736x/b1/6b/e2/b16be28a1c6d58fbdb4e5fb3daeca161.jpg
   addCardFormElement.reset();
   closeModal(popupAddNewCard);
 });

@@ -73,3 +73,39 @@ export const deleteCardFromServer = (cardId, cardElement) => {
         return Promise.reject(`Ошибка: ${error}`);
       })
 }
+
+// Добавление лайка на карточку
+export const placeLike = (cardId, likeCount, likeButton) => {
+  return fetch(`${requestConfig.baseUrl}/cards/likes/${cardId}`, {
+      method: 'PUT',
+      headers: requestConfig.headers
+    })
+      .then(res => {
+        if (res.ok) return res.json();
+      })
+      .then((res) => {
+          likeCount.textContent = res['likes'].length;
+          likeButton.classList.add('card__like-button_is-active');
+      })
+      .catch((error) => {
+        return Promise.reject(`Ошибка: ${error}`);
+      })
+}
+
+// Удаление лайка с карточки
+export const deleteLike = (cardId, likeCount, likeButton) => {
+  return fetch(`${requestConfig.baseUrl}/cards/likes/${cardId}`, {
+      method: 'DELETE',
+      headers: requestConfig.headers
+    })
+      .then(res => {
+        if (res.ok) return res.json();
+      })
+      .then((res) => {
+          likeCount.textContent = res['likes'].length;
+          likeButton.classList.remove('card__like-button_is-active');
+      })
+      .catch((error) => {
+        return Promise.reject(`Ошибка: ${error}`);
+      })
+}

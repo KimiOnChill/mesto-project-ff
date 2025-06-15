@@ -1,4 +1,5 @@
-import { deleteCardFromServer } from './api.js';
+import { placeLike, deleteLike } from './api.js';
+
 
 // Функция создания карточки
 export function createCard (card, openFullPic, handleLike, cardOwnerId, userId, deleteCardFromServer) {
@@ -16,23 +17,33 @@ export function createCard (card, openFullPic, handleLike, cardOwnerId, userId, 
   newCard.querySelector('.card__title').textContent = card.name;
 
   // Likes
-  newCard.querySelector('.card__like-button').addEventListener('click', handleLike);
-  newCard.querySelector('.card__like-count').textContent = Array.isArray(card.likes) ? card.likes.length : 0;
+  const likeCount = newCard.querySelector('.card__like-count');
+  const likeButton = newCard.querySelector('.card__like-button');
+  if (Array.isArray(card.likes)) {
+    likeCount.textContent = card.likes.length;
+    if (card.likes.some((x) => x['_id'] == userId)){
+      likeButton.classList.add('card__like-button_is-active');
+    }
+  }
+  else {
+    likeCount.textContent = 0;
+  }
+  likeButton.addEventListener('click',() => handleLike(card['_id'], likeCount, likeButton));
   
   // Delete, если карточка создана этим пользователем
   if (cardOwnerId == userId) {
     newCard.querySelector('.card__delete-button').classList.remove('hidden');
-    newCard.querySelector('.card__delete-button').addEventListener('click', () => deleteCardFromServer(card['_id'], newCard));
+    newCard.querySelector('.card__delete-button').addEventListener('click', () =>
+      deleteCardFromServer(card['_id'], newCard)
+    );
   }
 
   return newCard;
 }
 
 // Функция обработки лайка
-export function handleLike (evt) {
-  const element = evt.target.closest('.places__item');
-  const likeButton = element.querySelector('.card__like-button');
+export function handleLike (cardId, likeCount, likeButton) {
   likeButton.classList.contains('card__like-button_is-active') ? 
-    likeButton.classList.remove('card__like-button_is-active'):
-    likeButton.classList.add('card__like-button_is-active');
+    deleteLike(cardId, likeCount, likeButton):
+    placeLike(cardId, likeCount, likeButton);
 }
