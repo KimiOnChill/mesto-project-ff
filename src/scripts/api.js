@@ -12,13 +12,28 @@ export const getUserData = () => {
     headers: requestConfig.headers
   })
     .then(res => {
-      if (res.ok) return res.json()
+      if (res.ok) return res.json();
       return Promise.reject(`Ошибка: ${res.status}`);
+    })
+    .catch((error) => {
+      console.log(`Ошибка: ${error}`);
     })
 }
 
+// Функция смены надписи Сохранить на Сохранение
+export const savingOnButton = (button, isSaving) => {
+  if (isSaving) {
+    button.textContent = "Сохранение...";
+    button.setAttribute('disabled', '');
+  }
+  else{
+    button.textContent = "Сохранить";
+    button.removeAttribute('disabled');
+  }
+}
+
 // Смена аватара пользователя
-export const changeAvatar = (avatarLink) => {
+export const changeAvatar = (avatarLink, button) => {
   return fetch(`${requestConfig.baseUrl}/users/me/avatar`, {
     method: 'PATCH',
     headers: requestConfig.headers,
@@ -27,8 +42,15 @@ export const changeAvatar = (avatarLink) => {
       })
   })
     .then(res => {
-      if (res.ok) return res.json()
+      savingOnButton(button, true);
+      if (res.ok) return res.json();
       return Promise.reject(`Ошибка: ${res.status}`);
+    })
+    .catch((error) => {
+      console.log(`Ошибка: ${error}`);
+    })
+    .finally( () => {
+      setTimeout(() => {savingOnButton(button, false)}, 1500)
     })
 }
 
@@ -41,10 +63,13 @@ export const getCardsFromServer = () => {
       if (res.ok) return res.json();
       return Promise.reject(`Ошибка: ${res.status}`);
     })
+    .catch((error) => {
+      console.log(`Ошибка: ${error}`);
+    })
 } 
 
 // Редактирование профиля с отправкой на сервер
-export const editProfile = (newName, newAbout) => {
+export const editProfile = (newName, newAbout, button) => {
   return fetch(`${requestConfig.baseUrl}/users/me`, {
       method: 'PATCH',
       headers: requestConfig.headers,
@@ -54,13 +79,20 @@ export const editProfile = (newName, newAbout) => {
       })
     })
       .then(res => {
+        savingOnButton(button, true);
         if (res.ok) return res.json();
         return Promise.reject(`Ошибка: ${res.status}`);
+      })
+      .catch((error) => {
+        console.log(`Ошибка: ${error}`);
+      })
+      .finally( () => {
+        setTimeout(() => {savingOnButton(button, false)}, 1500)
       })
 }
 
 // Добавление карточки с отправкой на сервер
-export const addCard = (newName, newLink) => {
+export const addCard = (newName, newLink, button) => {
   return fetch(`${requestConfig.baseUrl}/cards`, {
       method: 'POST',
       headers: requestConfig.headers,
@@ -70,8 +102,15 @@ export const addCard = (newName, newLink) => {
       })
     })
       .then(res => {
+        savingOnButton(button, true);
         if (res.ok) return res.json();
         return Promise.reject(`Ошибка: ${res.status}`);
+      })
+      .catch((error) => {
+        console.log(`Ошибка: ${error}`);
+      })
+      .finally( () => {
+        setTimeout(() => {savingOnButton(button, false)}, 1500)
       })
 }
 
@@ -83,9 +122,10 @@ export const deleteCardFromServer = (cardId, cardElement) => {
     })
       .then(res => {
         if (res.ok) cardElement.remove();
+        return Promise.reject(`Ошибка: ${res.status}`);
       })
       .catch((error) => {
-        return Promise.reject(`Ошибка: ${error}`);
+        console.log(`Ошибка: ${error}`);
       })
 }
 
@@ -97,13 +137,14 @@ export const placeLike = (cardId, likeCount, likeButton) => {
     })
       .then(res => {
         if (res.ok) return res.json();
+        return Promise.reject(`Ошибка: ${res.status}`);
       })
       .then((res) => {
           likeCount.textContent = res['likes'].length;
           likeButton.classList.add('card__like-button_is-active');
       })
       .catch((error) => {
-        return Promise.reject(`Ошибка: ${error}`);
+        console.log(`Ошибка: ${error}`);
       })
 }
 
@@ -115,12 +156,13 @@ export const deleteLike = (cardId, likeCount, likeButton) => {
     })
       .then(res => {
         if (res.ok) return res.json();
+        return Promise.reject(`Ошибка: ${res.status}`);
       })
       .then((res) => {
           likeCount.textContent = res['likes'].length;
           likeButton.classList.remove('card__like-button_is-active');
       })
       .catch((error) => {
-        return Promise.reject(`Ошибка: ${error}`);
+        console.log(`Ошибка: ${error}`);
       })
 }

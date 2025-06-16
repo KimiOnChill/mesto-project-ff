@@ -6,7 +6,7 @@ import './pages/index.css';
 import { createCard, handleLike } from './scripts/card.js';
 import { openModal, closeModal } from './scripts/modal.js';
 import { enableValidation, clearValidation } from './scripts/validation.js';
-import { getUserData, changeAvatar, getCardsFromServer, editProfile, addCard, deleteCardFromServer } from './scripts/api.js';
+import { getUserData, savingOnButton, changeAvatar, getCardsFromServer, editProfile, addCard, deleteCardFromServer } from './scripts/api.js';
 
 // DOM узлы
 const cardsContainer = document.querySelector('.places__list'); // контейнер всех карточек
@@ -76,17 +76,18 @@ profileImageOnPage.addEventListener('click', function () {
   openModal(popupToChangeAvatar);
   // очистка поля от валидации
   clearValidation(changeAvatarFormElement, changeAvatarInput, config);
+  // блокировка кнопки
+  changeAvatarFormElement.querySelector(config.submitButtonClass).classList.add(config.inactiveButtonClass);
 });
 
-// Запрос на смену аватара
+// Смена аватара
 changeAvatarFormElement.addEventListener('submit', (evt) => {
   evt.preventDefault();
-  changeAvatar(changeAvatarInput.value).then((res) => {
+  changeAvatar(changeAvatarInput.value, changeAvatarFormElement.querySelector('.popup__button')).then((res) => {
     profileImageOnPage.style.backgroundImage = `url('${res.avatar}')`;
     changeAvatarFormElement.reset();
-    closeModal(popupToChangeAvatar);
+    setTimeout(() => {closeModal(popupToChangeAvatar)}, 1000);
   });
-  
 });
 
 // Открытие модального окна редактирования профиля по кнопке
@@ -98,7 +99,7 @@ buttonOpenEditProfile.addEventListener('click', function () {
   // очистка полей от валидации
   clearValidation(profileFormElement, nameInput, config);
   clearValidation(profileFormElement, descriptionInput, config);
-  // блокировка кнопки
+  // разблокировка кнопки, так как поля заполнены
   profileFormElement.querySelector(config.submitButtonClass).classList.remove(config.inactiveButtonClass);
 });
 
@@ -129,12 +130,12 @@ allPopups.forEach( popup => {
 // Отправка формы редактирования профиля, подгружающая данные с сервера при изменении
 profileFormElement.addEventListener('submit', function handleFormSubmit (evt) {
   evt.preventDefault();
-  editProfile(nameInput.value, descriptionInput.value);
+  editProfile(nameInput.value, descriptionInput.value, profileFormElement.querySelector('.popup__button'));
   getUserData().then(userData => {
       profileNameOnPage.textContent = userData.name;
       profileDescriptionOnPage.textContent = userData.about;
   })
-  closeModal(popupEditProfile);
+  setTimeout(() => {closeModal(popupEditProfile)}, 1000);
 });
 
 // Создание новой карточки  
@@ -145,13 +146,13 @@ addCardFormElement.addEventListener('submit', function handleSubmit (evt) {
     link: cardUrlInput.value
   };
   cardsContainer.prepend(createCard(newCardObj, openFullPic, handleLike, userId, userId, deleteCardFromServer));
-  addCard(newCardObj.name, newCardObj.link);
+  addCard(newCardObj.name, newCardObj.link, addCardFormElement.querySelector('.popup__button'));
   // test image
   // name: Big Yoshi
   // link: https://i.pinimg.com/736x/b1/6b/e2/b16be28a1c6d58fbdb4e5fb3daeca161.jpg
   // https://sun9-71.userapi.com/impg/GaZ1Rz0QEz5l79S1mVCze8ycWxhKuTOTCeCOrw/o1b9fvenCjk.jpg?size=2560x1405&quality=95&sign=fa00b8265714d21643faf53955e37cd8&type=album
   addCardFormElement.reset();
-  closeModal(popupAddNewCard);
+  setTimeout(() => {closeModal(popupAddNewCard)}, 1000);
 });
 
 // Функция открытия картинки на фулл
