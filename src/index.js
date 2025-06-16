@@ -66,7 +66,7 @@ Promise.all([getUserData(), getCardsFromServer()])
     getCardsFromServer().then(cardsObj => {
       cardsObj.forEach((card) => {
         const cardOwnerId = card['owner']['_id'];
-        cardsContainer.append(createCard(card, openFullPic, handleLike, cardOwnerId, userId, deleteCardFromServer));
+        cardsContainer.append(createCard(card, openFullPic, handleLike, cardOwnerId, userId, deleteCardFromServer, card['_id']));
       })
     })
 });
@@ -145,12 +145,17 @@ addCardFormElement.addEventListener('submit', function handleSubmit (evt) {
     name: cardNameInput.value,
     link: cardUrlInput.value
   };
-  cardsContainer.prepend(createCard(newCardObj, openFullPic, handleLike, userId, userId, deleteCardFromServer));
-  addCard(newCardObj.name, newCardObj.link, addCardFormElement.querySelector('.popup__button'));
-  // test image
-  // name: Big Yoshi
-  // link: https://i.pinimg.com/736x/b1/6b/e2/b16be28a1c6d58fbdb4e5fb3daeca161.jpg
-  // https://sun9-71.userapi.com/impg/GaZ1Rz0QEz5l79S1mVCze8ycWxhKuTOTCeCOrw/o1b9fvenCjk.jpg?size=2560x1405&quality=95&sign=fa00b8265714d21643faf53955e37cd8&type=album
+  let cardId;
+  addCard(newCardObj.name, newCardObj.link, addCardFormElement.querySelector('.popup__button'))
+    .then((card) => {
+      //навешивание на новую карточку обработчиков с данными с сервера
+      cardId = card['_id'];
+      cardsContainer.prepend(
+        createCard(newCardObj, openFullPic, handleLike, userId, userId, deleteCardFromServer, cardId)
+      )
+    });
+  // test name: Big Yoshi
+  // test link: https://i.pinimg.com/736x/b1/6b/e2/b16be28a1c6d58fbdb4e5fb3daeca161.jpg
   addCardFormElement.reset();
   setTimeout(() => {closeModal(popupAddNewCard)}, 1000);
 });

@@ -2,7 +2,7 @@ import { placeLike, deleteLike } from './api.js';
 
 
 // Функция создания карточки
-export function createCard (card, openFullPic, handleLike, cardOwnerId, userId, deleteCardFromServer) {
+export function createCard (card, openFullPic, handleLike, cardOwnerId, userId, deleteCardFromServer, cardId) {
 
   const cardTemplate = document.querySelector('#card-template').content;
   const newCard = cardTemplate.querySelector('.card').cloneNode(true);
@@ -28,13 +28,13 @@ export function createCard (card, openFullPic, handleLike, cardOwnerId, userId, 
   else {
     likeCount.textContent = 0;
   }
-  likeButton.addEventListener('click',() => handleLike(card['_id'], likeCount, likeButton));
+  likeButton.addEventListener('click',() => handleLike(cardId, likeCount, likeButton));
   
   // Delete, если карточка создана этим пользователем
   if (cardOwnerId == userId) {
     newCard.querySelector('.card__delete-button').classList.remove('hidden');
     newCard.querySelector('.card__delete-button').addEventListener('click', () =>
-      deleteCardFromServer(card['_id'], newCard)
+      deleteCardFromServer(cardId, newCard)
     );
   }
 
