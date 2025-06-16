@@ -1,6 +1,5 @@
 import { placeLike, deleteLike } from './api.js';
 
-
 // Функция создания карточки
 export function createCard (card, openFullPic, handleLike, cardOwnerId, userId, deleteCardFromServer, cardId) {
 

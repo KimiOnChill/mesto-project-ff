@@ -1,6 +1,3 @@
-//! What css i've changed when was setting up validation:
-//! popup-input.css | popup__button.css | popup__form.css
-
 // Импорты
 import './pages/index.css';
 import { createCard, handleLike } from './scripts/card.js';
