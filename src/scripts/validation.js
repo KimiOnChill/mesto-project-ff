@@ -1,40 +1,41 @@
 // Function to add class with error
 const showInputError = (formElement, inputElement, errorMessage, config) => {
   // to find element with error inside form
-  const errorElement = formElement.querySelector(`.${inputElement.name}-input-error`);
+  const errorElement = formElement.querySelector(
+    `.${inputElement.name}-input-error`
+  );
   inputElement.classList.add(config.errorClass);
   errorElement.textContent = errorMessage;
   errorElement.classList.remove(config.hiddenClass);
 };
 
 // Function to remove class with error
-export const clearValidation  = (formElement, inputElement, config) => {
+const hideInputError = (formElement, inputElement, config) => {
   // to find element with error inside form
-  const errorElement = formElement.querySelector(`.${inputElement.name}-input-error`);
+  const errorElement = formElement.querySelector(
+    `.${inputElement.name}-input-error`
+  );
   inputElement.classList.remove(config.errorClass);
   errorElement.classList.add(config.hiddenClass);
-  errorElement.textContent = '';
+  errorElement.textContent = "";
 };
 
 // Function to check input validity
 const isValid = (formElement, inputElement, config) => {
   if (inputElement.validity.patternMismatch) {
     inputElement.setCustomValidity(inputElement.dataset.errorMessage);
-  }
-  else if (inputElement.validity.valueMissing) {
-    inputElement.setCustomValidity("Вы пропустили это поле");
-  }
-  else if (inputElement.validity.typeMismatch) {
-    inputElement.setCustomValidity("Введите ссылку");
-  }
-  else {
+  } else {
     inputElement.setCustomValidity("");
   }
-  if (!inputElement.validity.valid) { 
-    showInputError(formElement, inputElement, inputElement.validationMessage, config);
-  } 
-  else {
-    clearValidation(formElement, inputElement, config);
+  if (!inputElement.validity.valid) {
+    showInputError(
+      formElement,
+      inputElement,
+      inputElement.validationMessage,
+      config
+    );
+  } else {
+    hideInputError(formElement, inputElement, config);
   }
 };
 
@@ -43,28 +44,36 @@ const hasInvalidInput = (inputList) => {
   return inputList.some((inputElement) => {
     // If some input is invalid, this will be true and stop the function
     return !inputElement.validity.valid;
-  })
-}; 
+  });
+};
+
+// To deactivate button
+const disableSubmitButton = (buttonElement, config) => {
+  buttonElement.disabled = true;
+  buttonElement.classList.add(config.inactiveButtonClass);
+};
+
+// To activate button
+const enableSubmitButton = (buttonElement, config) => {
+  buttonElement.disabled = false;
+  buttonElement.classList.remove(config.inactiveButtonClass);
+};
 
 // Function to make button active or not
 const toggleButtonState = (inputList, buttonElement, config) => {
-  // if any input is invalid, diable the button
-  if (hasInvalidInput(inputList)) {
-    buttonElement.disabled = true;
-    buttonElement.classList.add(config.inactiveButtonClass);
-  } else {
-    buttonElement.disabled = false;
-    buttonElement.classList.remove(config.inactiveButtonClass);
-  }
-}; 
+  // if any input is invalid, disable the button
+  hasInvalidInput(inputList)
+    ? disableSubmitButton(buttonElement, config)
+    : enableSubmitButton(buttonElement, config);
+};
 
 // Function to add listeners to each form's input
 const setEventListeners = (formElement, config) => {
-  const inputList = Array.from(formElement.querySelectorAll(`${config.inputClass}`));
-  const buttonElement = formElement.querySelector(`${config.submitButtonClass}`); //if (formElement.name == "new-place") 
+  const inputList = Array.from(formElement.querySelectorAll(config.inputClass));
+  const buttonElement = formElement.querySelector(config.submitButtonClass); //if (formElement.name == "new-place")
   toggleButtonState(inputList, buttonElement, config);
   inputList.forEach((inputElement) => {
-    inputElement.addEventListener('input', () => {
+    inputElement.addEventListener("input", () => {
       isValid(formElement, inputElement, config);
       toggleButtonState(inputList, buttonElement, config);
     });
@@ -73,8 +82,20 @@ const setEventListeners = (formElement, config) => {
 
 // Function to add listeners for every form
 export function enableValidation(config) {
-  const formList = Array.from(document.querySelectorAll(`${config.formClass}`));
+  const formList = Array.from(document.querySelectorAll(config.formClass));
   formList.forEach((formElement) => {
     setEventListeners(formElement, config);
   });
+}
+
+// Function to clear all form inputs and block button
+export const clearValidation = (formElement, config) => {
+  const inputsList = Array.from(
+    formElement.querySelectorAll(config.inputClass)
+  );
+  inputsList.forEach((input) => {
+    hideInputError(formElement, input, config);
+  });
+  const buttonElement = formElement.querySelector(config.submitButtonClass);
+  disableSubmitButton(buttonElement, config);
 };
