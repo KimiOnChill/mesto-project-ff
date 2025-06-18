@@ -20,7 +20,7 @@ export const getUserData = () => {
 };
 
 // Смена аватара пользователя
-export const changeAvatar = (avatarLink, button) => {
+export const changeAvatar = (avatarLink) => {
   return fetch(`${requestConfig.baseUrl}/users/me/avatar`, {
     method: "PATCH",
     headers: requestConfig.headers,
@@ -38,7 +38,7 @@ export const getCardsFromServer = () => {
 };
 
 // Редактирование профиля с отправкой на сервер
-export const editProfile = (newName, newAbout, button) => {
+export const editProfile = (newName, newAbout) => {
   return fetch(`${requestConfig.baseUrl}/users/me`, {
     method: "PATCH",
     headers: requestConfig.headers,
@@ -50,7 +50,7 @@ export const editProfile = (newName, newAbout, button) => {
 };
 
 // Добавление карточки с отправкой на сервер
-export const addCard = (newName, newLink, button) => {
+export const addCard = (newName, newLink) => {
   return fetch(`${requestConfig.baseUrl}/cards`, {
     method: "POST",
     headers: requestConfig.headers,

@@ -10,8 +10,6 @@ export function openModal(modal) {
 // Функция закрытия модального окна
 export function closeModal(modal) {
   modal.classList.remove("popup_is-opened");
-  if (modal.querySelector(".popup__form") !== null)
-    modal.querySelector(".popup__form").reset();
   document.removeEventListener("keydown", closePopupEsc);
 }
 

@@ -100,13 +100,14 @@ Promise.all([getUserData(), getCardsFromServer()])
 
 // Открытие модального окна редактирования аватара по кнопке
 profileImageOnPage.addEventListener("click", function () {
+  changeAvatarFormElement.reset();
   clearValidation(changeAvatarFormElement, config);
   openModal(popupToChangeAvatar);
 });
 
 // Функция смены надписи Сохранить на Сохранение
 const savingOnButton = (formElement, isSaving) => {
-  const button = formElement.querySelector(".popup__button")
+  const button = formElement.querySelector(".popup__button");
   if (isSaving) {
     button.textContent = "Сохранение...";
     button.setAttribute("disabled", "");
@@ -119,10 +120,7 @@ const savingOnButton = (formElement, isSaving) => {
 // Смена аватара
 changeAvatarFormElement.addEventListener("submit", (evt) => {
   evt.preventDefault();
-  changeAvatar(
-    changeAvatarInput.value,
-    changeAvatarFormElement.querySelector(".popup__button")
-  )
+  changeAvatar(changeAvatarInput.value)
     .then((res) => {
       savingOnButton(changeAvatarFormElement, true);
       profileImageOnPage.style.backgroundImage = `url('${res.avatar}')`;
@@ -142,6 +140,7 @@ changeAvatarFormElement.addEventListener("submit", (evt) => {
 
 // Открытие модального окна редактирования профиля по кнопке
 buttonOpenEditProfile.addEventListener("click", function () {
+  profileFormElement.reset();
   clearValidation(profileFormElement, config);
   openModal(popupEditProfile);
   // поля формы заполнены значениями со страницы
@@ -151,6 +150,7 @@ buttonOpenEditProfile.addEventListener("click", function () {
 
 // Открытие модального окна добавления карточки по кнопке
 buttonAddNewCard.addEventListener("click", () => {
+  addCardFormElement.reset();
   clearValidation(addCardFormElement, config);
   openModal(popupAddNewCard);
 });
@@ -171,15 +171,18 @@ allPopups.forEach((popup) => {
   // закрытие нажатием на esc описано в openModal
 });
 
-// Отправка формы редактирования профиля, подгружающая данные с сервера при изменении
+// Отправка формы редактирования профиля с внесением изменений в интерфейс
 profileFormElement.addEventListener("submit", function handleFormSubmit(evt) {
   evt.preventDefault();
-  editProfile(
-    nameInput.value,
-    descriptionInput.value,
-    profileFormElement.querySelector(".popup__button")
-  )
-    .then(() => savingOnButton(profileFormElement, true))
+  editProfile(nameInput.value, descriptionInput.value)
+    .then(() => {
+      savingOnButton(profileFormElement, true);
+      profileNameOnPage.textContent = nameInput.value;
+      profileDescriptionOnPage.textContent = descriptionInput.value;
+      setTimeout(() => {
+        closeModal(popupEditProfile);
+      }, 1000);
+    })
     .catch((error) => {
       console.log(`Ошибка: ${error}`);
     })
@@ -187,18 +190,6 @@ profileFormElement.addEventListener("submit", function handleFormSubmit(evt) {
       setTimeout(() => {
         savingOnButton(profileFormElement, false);
       }, 1500);
-    });
-
-  getUserData()
-    .then((userData) => {
-      profileNameOnPage.textContent = userData.name;
-      profileDescriptionOnPage.textContent = userData.about;
-      setTimeout(() => {
-        closeModal(popupEditProfile);
-      }, 1000);
-    })
-    .catch((error) => {
-      console.log(`Ошибка: ${error}`);
     });
 });
 
@@ -209,11 +200,7 @@ addCardFormElement.addEventListener("submit", function handleSubmit(evt) {
     name: cardNameInput.value,
     link: cardUrlInput.value,
   };
-  addCard(
-    newCardObj.name,
-    newCardObj.link,
-    addCardFormElement.querySelector(".popup__button")
-  )
+  addCard(newCardObj.name, newCardObj.link)
     .then((card) => {
       savingOnButton(addCardFormElement, true);
       //навешивание на новую карточку обработчиков с данными с сервера
